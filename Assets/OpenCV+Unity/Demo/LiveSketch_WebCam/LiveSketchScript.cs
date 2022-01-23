@@ -6,6 +6,8 @@
 
     public class LiveSketchScript : WebCamera
     {
+        public Texture2D texture2D;
+
         public int blurSize = 5;
         public float thres = 70f;
         public float maxVal = 255f;
@@ -123,6 +125,7 @@
 
 
             output = Unity.MatToTexture(mask, output);
+            texture2D = output;
             //}
             return true;
         }
