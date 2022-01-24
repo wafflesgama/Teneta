@@ -533,7 +533,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1886349879}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4506a859f7b215b4d9c28d488b826219, type: 3}
   m_Name: 
@@ -572,7 +572,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnablePeerMetrics: 0
   MetricsSize: 10
-  SocketFactory: {fileID: 1886349889}
+  SocketFactory: {fileID: 1886349880}
   DisconnectOnException: 1
   authenticator: {fileID: 0}
   _started:
@@ -608,7 +608,7 @@ MonoBehaviour:
   MaxConnections: 4
   DisconnectOnException: 1
   Listening: 1
-  SocketFactory: {fileID: 1886349889}
+  SocketFactory: {fileID: 1886349880}
   authenticator: {fileID: 0}
   _started:
     _event:

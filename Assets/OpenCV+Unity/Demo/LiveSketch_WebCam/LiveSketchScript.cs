@@ -20,6 +20,7 @@
         Mat refImage;
         Mat img;
 
+        public bool bw;
 
         public Mat finalMat;
 
@@ -109,9 +110,13 @@
             //////Extract edges
             //Mat cannyEdges = new Mat();
             //Cv2.Canny(mask, cannyEdges, canny1, canny2);
+            Mat maskConverted = new Mat();
+            if (bw)
+                Cv2.CvtColor(mask, maskConverted, ColorConversionCodes.BGR2GRAY);
+            else
+                maskConverted = mask;
 
-            //Mat maskConverted = new Mat();
-            //Cv2.CvtColor(mask, maskConverted, ColorConversionCodes.BGR2YUV_YV12);
+
             ////if (modeC)
             ////{
             //Point[][] countourPoints;
@@ -127,8 +132,8 @@
             //}
 
 
-            finalMat = mask;
-            output = Unity.MatToTexture(mask, output);
+            finalMat = maskConverted;
+            output = Unity.MatToTexture(maskConverted, output);
             texture2D = output;
             //}
             return true;

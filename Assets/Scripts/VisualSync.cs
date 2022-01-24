@@ -19,9 +19,14 @@ public class VisualSync : NetworkBehaviour
     private NetworkClient client;
     private NetworkServer server;
 
+    private int messageSize = 4;
+
+    private int currentIndex=0;
+
     [NetworkMessage]
     public struct SyncMessage
     {
+        //public int index;
         public ArraySegment<byte> data;
     }
 
@@ -43,8 +48,14 @@ public class VisualSync : NetworkBehaviour
             transform.parent.gameObject.SetActive(false);
             return;
         }
-
+        
         client.MessageHandler.RegisterHandler<SyncMessage>(OnSyncTexture);
+
+
+        server.PeerConfig = new Mirage.SocketLayer.Config();
+        server.PeerConfig.MaxPacketSize = 4000;
+        //server.PeerConfig.MaxReliablePacketsInSendBufferPerConnection = 8000;
+
     }
 
     void Update()
@@ -79,17 +90,50 @@ public class VisualSync : NetworkBehaviour
 
         Debug.Log("Sending texture data");
         var pngData = inputSource.texture2D.GetRawTextureData();
-        var jpgData = inputSource.texture2D.EncodeToJPG(5);
+        var jpgData = inputSource.texture2D.EncodeToJPG(1);
 
         var compressedjpgData = CLZF.Compress(jpgData);
         var compressedpngData = CLZF.Compress(pngData);
 
-        Debug.Log($"pngData {pngData.Length}, jpgData {jpgData}, cPng {compressedjpgData.Length}, cJpg {compressedpngData.Length}");
+        Debug.Log($"pngData {pngData.Length}, jpgData {jpgData.Length}, cJpg {compressedjpgData.Length}, cPng {compressedpngData.Length}");
         SyncMessage msg = new SyncMessage()
         {
             data = new ArraySegment<byte>(compressedjpgData)
         };
-
-        server.SendToAll(msg);
+        server.SendToAll(msg,Channel.Unreliable);
     }
+
+
+    //private void OnSyncTexture(INetworkPlayer player, SyncMessage syncMessage)
+    //{
+    //    if (IsServer && IsLocalPlayer) return;
+
+    //    Debug.Log($"OnSyncTexture received");
+
+    //    receivedData = syncMessage.data.ToArray();
+
+    //    receivedData = CLZF.Decompress(receivedData);
+
+    //    receivedTexture.LoadImage(receivedData);
+    //    raw.texture = receivedTexture;
+    //}
+
+    //public void SyncTexture()
+    //{
+    //    if (inputSource.finalMat == null) return;
+
+    //    Debug.Log("Sending texture data");
+    //    var pngData = inputSource.texture2D.GetRawTextureData();
+    //    var jpgData = inputSource.texture2D.EncodeToJPG(1);
+
+    //    var compressedjpgData = CLZF.Compress(jpgData);
+    //    var compressedpngData = CLZF.Compress(pngData);
+
+    //    Debug.Log($"pngData {pngData.Length}, jpgData {jpgData.Length}, cJpg {compressedjpgData.Length}, cPng {compressedpngData.Length}");
+    //    SyncMessage msg = new SyncMessage()
+    //    {
+    //        data = new ArraySegment<byte>(compressedjpgData)
+    //    };
+    //    server.SendToAll(msg, Channel.Unreliable);
+    //}
 }
