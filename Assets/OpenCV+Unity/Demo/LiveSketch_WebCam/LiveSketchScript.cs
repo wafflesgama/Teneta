@@ -20,6 +20,9 @@
         Mat refImage;
         Mat img;
 
+
+        public Mat finalMat;
+
         protected override void Awake()
         {
             base.Awake();
@@ -124,6 +127,7 @@
             //}
 
 
+            finalMat = mask;
             output = Unity.MatToTexture(mask, output);
             texture2D = output;
             //}
