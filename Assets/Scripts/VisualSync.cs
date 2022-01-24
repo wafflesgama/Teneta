@@ -53,8 +53,8 @@ public class VisualSync : NetworkBehaviour
 
 
         server.PeerConfig = new Mirage.SocketLayer.Config();
-        server.PeerConfig.MaxPacketSize = 4000;
-        //server.PeerConfig.MaxReliablePacketsInSendBufferPerConnection = 8000;
+        server.PeerConfig.MaxPacketSize = 8000;
+        server.PeerConfig.MaxReliablePacketsInSendBufferPerConnection = 8000;
 
     }
 
@@ -100,7 +100,8 @@ public class VisualSync : NetworkBehaviour
         {
             data = new ArraySegment<byte>(compressedjpgData)
         };
-        server.SendToAll(msg,Channel.Unreliable);
+        server.SendToAll(msg);
+        //server.SendToAll(msg,Channel.Unreliable);
     }
 
 
