@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.hwaet.projectcloner": "https://github.com/hwaet/UnityProjectCloner.git",
     "com.miragenet.mirage": "115.0.0",
     "com.miragenet.steamyface": "5.0.0",
     "com.unity.collab-proxy": "1.15.4",
