@@ -21,7 +21,7 @@ public class VisualSync : NetworkBehaviour
     private NetworkServer server;
 
     public int encodingQuality = 10;
-    public int messageSize = 75;
+    public int messageSize = 10;
     private int receivedMessageSize;
 
     private int currentIndex = 0;
@@ -121,7 +121,6 @@ public class VisualSync : NetworkBehaviour
 
             try
             {
-
                 receivedData = CLZF.Decompress(receivedData);
                 receivedTexture.LoadImage(receivedData);
                 raw.texture = receivedTexture;
@@ -155,11 +154,9 @@ public class VisualSync : NetworkBehaviour
 
         for (currentIndex = 0; currentIndex < actualSize; currentIndex++)
         {
-
             //if (currentIndex==0)
             //{
             //}
-
             var segm = new ArraySegment<byte>(sendingData.Skip((currentIndex) * interval).Take(interval).ToArray());
             sum += segm.Count;
             //Debug.Log($"sending legnth{segm.Count}");
@@ -183,37 +180,4 @@ public class VisualSync : NetworkBehaviour
 
     }
 
-
-    //private void OnSyncTexture(INetworkPlayer player, SyncMessage syncMessage)
-    //{
-    //    if (IsServer && IsLocalPlayer) return;
-
-    //    Debug.Log($"OnSyncTexture received");
-
-    //    receivedData = syncMessage.data.ToArray();
-
-    //    receivedData = CLZF.Decompress(receivedData);
-
-    //    receivedTexture.LoadImage(receivedData);
-    //    raw.texture = receivedTexture;
-    //}
-
-    //public void SyncTexture()
-    //{
-    //    if (inputSource.finalMat == null) return;
-
-    //    Debug.Log("Sending texture data");
-    //    var pngData = inputSource.texture2D.GetRawTextureData();
-    //    var jpgData = inputSource.texture2D.EncodeToJPG(1);
-
-    //    var compressedjpgData = CLZF.Compress(jpgData);
-    //    var compressedpngData = CLZF.Compress(pngData);
-
-    //    Debug.Log($"pngData {pngData.Length}, jpgData {jpgData.Length}, cJpg {compressedjpgData.Length}, cPng {compressedpngData.Length}");
-    //    SyncMessage msg = new SyncMessage()
-    //    {
-    //        data = new ArraySegment<byte>(compressedjpgData)
-    //    };
-    //    server.SendToAll(msg, Channel.Unreliable);
-    //}
 }
