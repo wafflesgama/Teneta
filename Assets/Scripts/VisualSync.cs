@@ -20,6 +20,7 @@ public class VisualSync : NetworkBehaviour
     private NetworkClient client;
     private NetworkServer server;
 
+    public int encodingQuality = 10;
     public int messageSize = 75;
     private int receivedMessageSize;
 
@@ -118,9 +119,17 @@ public class VisualSync : NetworkBehaviour
             else
                 Debug.Log($"OnSyncTexture finalizing normal data");
 
-            receivedData = CLZF.Decompress(receivedData);
-            receivedTexture.LoadImage(receivedData);
-            raw.texture = receivedTexture;
+            try
+            {
+
+                receivedData = CLZF.Decompress(receivedData);
+                receivedTexture.LoadImage(receivedData);
+                raw.texture = receivedTexture;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Exception occurred {ex.Message}");
+            }
         }
     }
 
@@ -133,7 +142,7 @@ public class VisualSync : NetworkBehaviour
         if (inputSource.texture2D == null) return;
 
         //Debug.Log("Setting up new frame data");
-        sendingData = CLZF.Compress(inputSource.texture2D.EncodeToJPG(10));
+        sendingData = CLZF.Compress(inputSource.texture2D.EncodeToJPG(encodingQuality));
         //Debug.Log($"sendingData total legnth{sendingData.Length}");
         int sum = 0;
 
@@ -160,8 +169,8 @@ public class VisualSync : NetworkBehaviour
                 totalSize = actualSize,
                 data = segm
             };
-            //server.SendToAll(msg);
-            server.SendToAll(msg,Channel.Unreliable);
+            server.SendToAll(msg);
+            //server.SendToAll(msg, Channel.Unreliable);
         }
 
         Debug.Log($"sendingData sum legnth{sum}");
