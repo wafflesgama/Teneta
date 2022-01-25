@@ -22,6 +22,9 @@
 
         public bool bw;
 
+
+
+
         public Mat finalMat;
 
         protected override void Awake()
@@ -121,18 +124,31 @@
             ////{
             //Point[][] countourPoints;
             //HierarchyIndex[] hierarchy;
+            //Point[][] countourPoints;
+            //Mat fillRec = new Mat();
             //Cv2.FindContours(maskConverted, out countourPoints, out hierarchy, RetrievalModes.Tree, ContourApproximationModes.ApproxSimple);
-            //if (countourPoints.Length > 0)
+            //if (countourPoints.Length > 0  && modeC)
             //{
 
-            //    Mat fillRec = new Mat(); ;
-            //    Cv2.FillConvexPoly(fillRec, countourPoints[0], Scalar.Blue);
+            //    //int largestIndex = 0;
+            //    //for (int i = 0; i < countourPoints.Length; i++)
+            //    //{
+            //    //    if (countourPoints[i].Length > countourPoints[largestIndex].Length)
+            //    //        largestIndex = i;
+            //    //}
+            //    Cv2.DrawContours(fillRec, countourPoints,0, Scalar.Blue);
+            //    //Cv2.FillPoly(fillRec, countourPoints, Scalar.Blue);
             //    // result, passing output texture as parameter allows to re-use it's buffer
             //    // should output texture be null a new texture will be created
+            //    if (modeC)
+            //        output = Unity.MatToTexture(fillRec, output);
             //}
 
+            //Mat mixed = new Mat();
+            //Cv2.Add(fillRec, maskConverted, mixed);
 
             finalMat = maskConverted;
+            //if (!modeC)
             output = Unity.MatToTexture(maskConverted, output);
             texture2D = output;
             //}

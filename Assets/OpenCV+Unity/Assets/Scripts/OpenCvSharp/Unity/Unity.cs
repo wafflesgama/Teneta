@@ -147,11 +147,18 @@ namespace OpenCvSharp {
 				if (null == outTexture || outTexture.width != size.Width || outTexture.height != size.Height)
 					outTexture = new Texture2D(size.Width, size.Height);
 
+				
 				int count = size.Width * size.Height;
 				Color32Bytes data = new Color32Bytes();
 				data.byteArray = new byte[count * 4];
-				data.colors = new Color32[count];
+				data.colors = new Color32[count]; try
+                {
+
 				Marshal.Copy(unityMat.Data, data.byteArray, 0, data.byteArray.Length);
+                }catch (Exception ex)
+                {
+					Debug.LogException(ex);
+                }
 				outTexture.SetPixels32(data.colors);
 				outTexture.Apply();
 

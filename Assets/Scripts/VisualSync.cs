@@ -150,7 +150,7 @@ public class VisualSync : NetworkBehaviour
         var leftovers = sendingData.Length - (interval * messageSize);
         var extraSize = (int)Math.Ceiling((float)leftovers / interval);
         var actualSize = messageSize + extraSize;
-        //Debug.Log($"actualSize {actualSize}");
+        Debug.Log($"actualSize {actualSize}");
 
         for (currentIndex = 0; currentIndex < actualSize; currentIndex++)
         {
