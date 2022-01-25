@@ -603,7 +603,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5f5ec068f5604c32b160bc49ee97b75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnablePeerMetrics: 0
+  EnablePeerMetrics: 1
   MetricsSize: 10
   MaxConnections: 4
   DisconnectOnException: 1

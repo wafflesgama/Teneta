@@ -18,6 +18,7 @@ namespace OpenCvSharp.Demo
 		/// Target surface to render WebCam stream
 		/// </summary>
 		public GameObject Surface;
+		public bool isRendering=true;
 
 		private Nullable<WebCamDevice> webCamDevice = null;
 		private WebCamTexture webCamTexture = null;
@@ -136,7 +137,7 @@ namespace OpenCvSharp.Demo
 		/// </summary>
 		private void Update ()
 		{
-			if (webCamTexture != null && webCamTexture.didUpdateThisFrame)
+			if (isRendering && webCamTexture != null && webCamTexture.didUpdateThisFrame)
 			{
 				// this must be called continuously
 				ReadTextureConversionParameters();

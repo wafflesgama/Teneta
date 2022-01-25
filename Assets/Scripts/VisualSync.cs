@@ -12,6 +12,7 @@ public class VisualSync : NetworkBehaviour
 
     Texture2D processText;
 
+    byte[] sendingData;
     byte[] receivedData;
     private Texture2D receivedTexture;
 
@@ -19,14 +20,21 @@ public class VisualSync : NetworkBehaviour
     private NetworkClient client;
     private NetworkServer server;
 
-    private int messageSize = 4;
+    public int messageSize = 75;
+    private int receivedMessageSize;
 
-    private int currentIndex=0;
+    private int currentIndex = 0;
+    DateTime lastRenderTime;
+    DateTime lastSentTime;
+    bool hasReceivedInitFrame;
+
+    bool waitingForNewFrame;
 
     [NetworkMessage]
     public struct SyncMessage
     {
-        //public int index;
+        public int index;
+        public int totalSize;
         public ArraySegment<byte> data;
     }
 
@@ -48,7 +56,7 @@ public class VisualSync : NetworkBehaviour
             transform.parent.gameObject.SetActive(false);
             return;
         }
-        
+
         client.MessageHandler.RegisterHandler<SyncMessage>(OnSyncTexture);
 
 
@@ -58,7 +66,7 @@ public class VisualSync : NetworkBehaviour
 
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (IsServer && IsLocalPlayer)
         {
@@ -72,36 +80,98 @@ public class VisualSync : NetworkBehaviour
 
     private void OnSyncTexture(INetworkPlayer player, SyncMessage syncMessage)
     {
-        if (IsServer && IsLocalPlayer) return;
+        //Debug.Log($"OnSyncTexture received index {syncMessage.index}");
 
-        Debug.Log($"OnSyncTexture received");
+        if (Identity.NetId == player.Identity.NetId) return;
 
-        receivedData = syncMessage.data.ToArray();
+        if (syncMessage.index == 0)
+        {
+            //Debug.Log($"OnSyncTexture init data");
+            if (lastRenderTime != null)
+            {
+                var timeDif = DateTime.Now.Subtract(lastRenderTime).TotalMilliseconds;
+                Debug.Log($"Received timeDif {timeDif}");
+            }
+            lastRenderTime = DateTime.Now;
+            receivedData = syncMessage.data.ToArray();
+            receivedMessageSize = syncMessage.totalSize;
+            hasReceivedInitFrame = true;
+            waitingForNewFrame = false;
 
-        receivedData = CLZF.Decompress(receivedData);
+        }
+        else if (syncMessage.index < currentIndex)
+        {
+            Debug.Log($"OnSyncTexture resetting data");
+            waitingForNewFrame = true;
+        }
+        else if (hasReceivedInitFrame && !waitingForNewFrame)
+        {
+            //Debug.Log($"OnSyncTexture adding to data");
+            receivedData = receivedData.Concat(syncMessage.data).ToArray();
+        }
 
-        receivedTexture.LoadImage(receivedData);
-        raw.texture = receivedTexture;
+
+        if (hasReceivedInitFrame && !waitingForNewFrame && syncMessage.index == receivedMessageSize - 1)
+        {
+            if (receivedMessageSize > messageSize)
+                Debug.Log($"OnSyncTexture finalizing bigger data");
+            else
+                Debug.Log($"OnSyncTexture finalizing normal data");
+
+            receivedData = CLZF.Decompress(receivedData);
+            receivedTexture.LoadImage(receivedData);
+            raw.texture = receivedTexture;
+        }
     }
+
+
+
+
 
     public void SyncTexture()
     {
-        if (inputSource.finalMat == null) return;
+        if (inputSource.texture2D == null) return;
 
-        Debug.Log("Sending texture data");
-        var pngData = inputSource.texture2D.GetRawTextureData();
-        var jpgData = inputSource.texture2D.EncodeToJPG(1);
+        //Debug.Log("Setting up new frame data");
+        sendingData = CLZF.Compress(inputSource.texture2D.EncodeToJPG(10));
+        //Debug.Log($"sendingData total legnth{sendingData.Length}");
+        int sum = 0;
 
-        var compressedjpgData = CLZF.Compress(jpgData);
-        var compressedpngData = CLZF.Compress(pngData);
+        var interval = sendingData.Length / messageSize;
+        //Debug.Log($"interval {interval}");
+        var leftovers = sendingData.Length - (interval * messageSize);
+        var extraSize = (int)Math.Ceiling((float)leftovers / interval);
+        var actualSize = messageSize + extraSize;
+        //Debug.Log($"actualSize {actualSize}");
 
-        Debug.Log($"pngData {pngData.Length}, jpgData {jpgData.Length}, cJpg {compressedjpgData.Length}, cPng {compressedpngData.Length}");
-        SyncMessage msg = new SyncMessage()
+        for (currentIndex = 0; currentIndex < actualSize; currentIndex++)
         {
-            data = new ArraySegment<byte>(compressedjpgData)
-        };
-        server.SendToAll(msg);
-        //server.SendToAll(msg,Channel.Unreliable);
+
+            //if (currentIndex==0)
+            //{
+            //}
+
+            var segm = new ArraySegment<byte>(sendingData.Skip((currentIndex) * interval).Take(interval).ToArray());
+            sum += segm.Count;
+            //Debug.Log($"sending legnth{segm.Count}");
+            SyncMessage msg = new SyncMessage()
+            {
+                index = currentIndex,
+                totalSize = actualSize,
+                data = segm
+            };
+            //server.SendToAll(msg);
+            server.SendToAll(msg,Channel.Unreliable);
+        }
+
+        Debug.Log($"sendingData sum legnth{sum}");
+        if (lastSentTime != null)
+        {
+            var timeDif = DateTime.Now.Subtract(lastSentTime).TotalMilliseconds;
+            Debug.Log($"Sent timeDif {timeDif}");
+        }
+        lastSentTime = DateTime.Now;
+
     }
 
 
