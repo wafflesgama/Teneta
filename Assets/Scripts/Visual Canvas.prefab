@@ -250,7 +250,7 @@ MonoBehaviour:
   raw: {fileID: 5536807038762378547}
   inputSource: {fileID: 5536807040021981251}
   encodingQuality: 2
-  messageSize: 10
+  messageSize: 3
 --- !u!1 &5536807040021981248
 GameObject:
   m_ObjectHideFlags: 0

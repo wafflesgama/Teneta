@@ -44,6 +44,10 @@
         {
 
             img = Unity.TextureToMat(input, TextureParameters);
+            output = Unity.MatToTexture(img, output);
+            texture2D = output;
+            return true;
+
             counter++;
             //Convert image to grayscale
             Mat imgGray = new Mat();
