@@ -125,6 +125,7 @@ public class GameManager : NetworkBehaviour
         {
             var wordToGuess = keywords[Random.Range(0, keywords.Length)];
             SetAwnser(wordToGuess);
+            SetVis(wordToGuess);
         }
 
         //if (test)
@@ -147,6 +148,12 @@ public class GameManager : NetworkBehaviour
     private void SetAwnser(string aw)
     {
         receiver.SetAwnser(aw);
+    }
+
+    [ClientRpc]
+    private void SetVis(string aw)
+    {
+        generator.SetVisWord(aw);
     }
 
 
