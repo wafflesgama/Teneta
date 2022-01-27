@@ -124,9 +124,12 @@ namespace OpenCvSharp.Demo
         /// </summary>
         protected virtual void Awake()
         {
-            StartCamera();
             surfaceImage = surface.GetComponent<RawImage>();
             surfaceRect = surface.GetComponent<RectTransform>();
+        }
+        private void Start()
+        {
+            StartCamera();
         }
 
         private void OnEnable()
@@ -155,6 +158,7 @@ namespace OpenCvSharp.Demo
                     webCamTexture.Stop();
                 
                 webCamTexture = null;
+                webCamDevice=null;
             }
         }
 

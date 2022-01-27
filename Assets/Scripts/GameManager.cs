@@ -13,8 +13,8 @@ public class GameManager : NetworkBehaviour
 
     private int numPlayersInGame = 0;
 
-    private VisualSync player;
-    private VisualSync opponent;
+    private VisualSync generator;
+    private VisualSync receiver;
 
 
     void Start()
@@ -31,8 +31,8 @@ public class GameManager : NetworkBehaviour
     {
 
         await Task.Delay(250);
-        if (player != null) return;
-        player = GameObject.Find("Visual Canvas(Clone) (self)").GetComponent<VisualSync>();
+        if (generator != null) return;
+        generator = GameObject.Find("Visual Canvas(Clone) (self)").GetComponent<VisualSync>();
         numPlayersInGame++;
     }
 
@@ -40,9 +40,9 @@ public class GameManager : NetworkBehaviour
     private async void Server_OnPlayerConnect(INetworkPlayer player)
     {
         await Task.Delay(250);
-        if (this.player != null && !player.Identity.gameObject.name.Equals("Visual Canvas(Clone) (self)"))
+        if (this.generator != null && !player.Identity.gameObject.name.Equals("Visual Canvas(Clone) (self)"))
         {
-            opponent = player.Identity.gameObject.GetComponent<VisualSync>();
+            receiver = player.Identity.gameObject.GetComponent<VisualSync>();
             numPlayersInGame++;
         }
 
@@ -54,9 +54,9 @@ public class GameManager : NetworkBehaviour
     {
         if (IsServer) return;
         await Task.Delay(250);
-        this.player = GameObject.FindObjectsOfType<VisualSync>(true).Where(x => x.name == "Visual Canvas(Clone) (self)").FirstOrDefault();
-        opponent = GameObject.Find("Visual Canvas(Clone)").GetComponent<VisualSync>();
-        if (player != null && opponent != null)
+        this.generator = GameObject.FindObjectsOfType<VisualSync>(true).Where(x => x.name == "Visual Canvas(Clone) (self)").FirstOrDefault();
+        receiver = GameObject.Find("Visual Canvas(Clone)").GetComponent<VisualSync>();
+        if (player != null && receiver != null)
             numPlayersInGame = 2;
     }
 
@@ -70,22 +70,25 @@ public class GameManager : NetworkBehaviour
 
     private void OnPlayerDisconnect(INetworkPlayer player)
     {
-        opponent = null;
+        receiver = null;
         numPlayersInGame--;
     }
     [ContextMenu("Start Game")]
     public void StartGame()
     {
         if (!IsServer || numPlayersInGame < 2) return;
-        
+
         OnStartGame();
     }
 
     [ClientRpc]
     private void OnStartGame()
     {
-        player.SetState(generate: true);
-        opponent.SetState(generate: false);
+        generator.SetState(generate: true);
+        receiver.SetState(generate: false);
+
+        //if (!IsServer)
+            receiver.StartReceiving();
     }
 
 
@@ -100,8 +103,24 @@ public class GameManager : NetworkBehaviour
     private void OnSwitchSides()
     {
         Debug.Log("Switching Sides");
-        player.gameObject.SetActive(!player.gameObject.activeSelf);
-        opponent.gameObject.SetActive(!opponent.gameObject.activeSelf);
+        var test = !generator.gameObject.activeSelf;
+        generator.gameObject.SetActive(!generator.gameObject.activeSelf);
+        receiver.gameObject.SetActive(!receiver.gameObject.activeSelf);
+
+        //if (test)
+        //{
+        //    if (IsServer)
+        //        receiver.StartReceiving();
+        //    //else
+        //    //    receiver.StopReceiving();
+        //}
+        //else
+        //{
+        //    if (IsServer)
+        //        receiver.StartReceiving();
+        //    //else
+        //    //    receiver.StopReceiving();
+        //}
     }
 
 

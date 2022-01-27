@@ -54,7 +54,9 @@ public class VisualSync : NetworkBehaviour
         if (IsLocalPlayer)
             transform.name += " (self)";
 
-        receivedTexture = new Texture2D(100, 100);
+        receivedTexture = new Texture2D(2, 2);
+
+        //client.MessageHandler.RegisterHandler<SyncMessage>(OnSyncTexture);
 
         if (Identity.NetId > 1 && ((!IsLocalPlayer && IsServer) || (IsLocalPlayer && !IsServer)))
         {
@@ -62,15 +64,41 @@ public class VisualSync : NetworkBehaviour
             return;
         }
 
+
         //SetState(IsServer && IsLocalPlayer);
 
-        client.MessageHandler.RegisterHandler<SyncMessage>(OnSyncTexture);
 
 
-        server.PeerConfig = new Mirage.SocketLayer.Config();
-        server.PeerConfig.MaxPacketSize = 8000;
-        server.PeerConfig.MaxReliablePacketsInSendBufferPerConnection = 8000;
+        //server.PeerConfig = new Mirage.SocketLayer.Config();
+        //server.PeerConfig.MaxPacketSize = 8000;
+        //server.PeerConfig.MaxReliablePacketsInSendBufferPerConnection = 8000;
 
+    }
+
+    //private void OnEnable()
+    //{
+    //    client.MessageHandler.RegisterHandler<SyncMessage>(OnSyncTexture);
+    //}
+
+    //private void OnDisable()
+    //{
+    //    client.MessageHandler.UnregisterHandler<SyncMessage>();
+    //}
+
+    public void StopReceiving()
+    {
+        if (IsServer)
+            client.MessageHandler.UnregisterHandler<SyncMessage>();
+        else
+            server.MessageHandler.UnregisterHandler<SyncMessage>();
+    }
+
+    public void StartReceiving()
+    {
+        if (IsServer)
+            server.MessageHandler.RegisterHandler<SyncMessage>(OnSyncTexture);
+        else
+            client.MessageHandler.RegisterHandler<SyncMessage>(OnSyncTexture);
     }
 
 
@@ -96,9 +124,12 @@ public class VisualSync : NetworkBehaviour
 
     private void OnSyncTexture(INetworkPlayer player, SyncMessage syncMessage)
     {
-        //Debug.Log($"OnSyncTexture received index {syncMessage.index}");
+        Debug.Log($"OnSyncTexture received index {syncMessage.index}");
+        //Debug.Log($"OnSyncTexture received from owner ID {player.Identity.NetId}, to ID {Identity.NetId} obj {gameObject.name}");
 
-        if (Identity.NetId == player.Identity.NetId) return;
+        //if (Identity.NetId == player.Identity.NetId || !gameObject.activeSelf) return;
+        if (!gameObject.activeSelf) return;
+
 
         if (syncMessage.index == 0)
         {
@@ -183,7 +214,10 @@ public class VisualSync : NetworkBehaviour
                 data = segm
             };
             //server.SendToAll(msg);
-            server.SendToAll(msg, Channel.Unreliable);
+            if (IsServer)
+                server.SendToAll<SyncMessage>(msg, Channel.Unreliable);
+            else
+                client.Send<SyncMessage>(msg, Channel.Unreliable);
         }
 
         Debug.Log($"sendingData sum legnth{sum}");
