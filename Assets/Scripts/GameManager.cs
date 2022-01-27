@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 public class GameManager : NetworkBehaviour
 {
+    public static GameManager instance;
     public NetworkServer server;
     public NetworkClient client;
 
@@ -17,6 +18,12 @@ public class GameManager : NetworkBehaviour
     private VisualSync receiver;
 
 
+    public string[] keywords = new string[] { "macarena", "swim", "zombie", "chicken", "fish", "soldier", "clock", "plane", "scissors", "heart", "drive", "rancho", "kill", "ballerina", "maestro", "paint", "eat", "cowboy", "camel", "fight", "house", "star" };
+
+    private void Awake()
+    {
+        instance = this;
+    }
     void Start()
     {
         server.Connected.AddListener(Server_OnPlayerConnect);
@@ -88,7 +95,13 @@ public class GameManager : NetworkBehaviour
         receiver.SetState(generate: false);
 
         //if (!IsServer)
-            receiver.StartReceiving();
+        receiver.StartReceiving();
+
+        if (IsServer)
+        {
+            var wordToGuess = keywords[Random.Range(0, keywords.Length)];
+            SetAwnser(wordToGuess);
+        }
     }
 
 
@@ -100,12 +113,19 @@ public class GameManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void OnSwitchSides()
+    public void OnSwitchSides()
     {
         Debug.Log("Switching Sides");
         var test = !generator.gameObject.activeSelf;
         generator.gameObject.SetActive(!generator.gameObject.activeSelf);
         receiver.gameObject.SetActive(!receiver.gameObject.activeSelf);
+
+
+        if (IsServer)
+        {
+            var wordToGuess = keywords[Random.Range(0, keywords.Length)];
+            SetAwnser(wordToGuess);
+        }
 
         //if (test)
         //{
@@ -121,6 +141,12 @@ public class GameManager : NetworkBehaviour
         //    //else
         //    //    receiver.StopReceiving();
         //}
+    }
+
+    [ClientRpc]
+    private void SetAwnser(string aw)
+    {
+        receiver.SetAwnser(aw);
     }
 
 

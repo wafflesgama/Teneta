@@ -33,6 +33,8 @@ public class VisualSync : NetworkBehaviour
 
     private bool isGenerating;
 
+    public string wordToGuess;
+
 
     [NetworkMessage]
     public struct SyncMessage
@@ -84,6 +86,18 @@ public class VisualSync : NetworkBehaviour
     //{
     //    client.MessageHandler.UnregisterHandler<SyncMessage>();
     //}
+
+    public void SetAwnser(string aw)
+    {
+        wordToGuess = aw;
+    }
+    public void GuessedWord(string word)
+    {
+        Debug.LogWarning($"Guessed word {word}");
+        if (word.Equals(wordToGuess))
+            GameManager.instance.OnSwitchSides();
+
+    }
 
     public void StopReceiving()
     {
