@@ -35,6 +35,8 @@ public class VisualSync : NetworkBehaviour
 
     public string wordToGuess;
 
+    public Text visWord;
+
 
     [NetworkMessage]
     public struct SyncMessage
@@ -89,7 +91,14 @@ public class VisualSync : NetworkBehaviour
 
     public void SetAwnser(string aw)
     {
+        visWord.transform.parent.gameObject.SetActive(false);
         wordToGuess = aw;
+    }
+
+    public void SetVisWord(string word)
+    {
+        visWord.transform.parent.gameObject.SetActive(true);
+        visWord.text = word;
     }
     public void GuessedWord(string word)
     {
