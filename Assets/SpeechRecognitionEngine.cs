@@ -23,7 +23,14 @@ public class SpeechRecognitionEngine : NetworkBehaviour
     {
         if (recognizer == null)
         {
+
+            foreach (var mic in Microphone.devices)
+            {
+                Debug.Log(mic);
+            }
+            //Debug.Log(devi)
             Debug.LogWarning("Init Voice");
+            Microphone.Start(Microphone.devices[0], true, 100, 4100);
             recognizer = new KeywordRecognizer(keywords, confidence);
             recognizer.OnPhraseRecognized += Recognizer_OnPhraseRecognized;
             visualSync = GetComponent<VisualSync>();
@@ -38,7 +45,8 @@ public class SpeechRecognitionEngine : NetworkBehaviour
         if (recognizer != null)
         {
             Debug.LogWarning("Start Voice");
-            recognizer.Start();
+            if (!recognizer.IsRunning)
+                recognizer.Start();
         }
     }
     private void OnDisable()
@@ -46,7 +54,8 @@ public class SpeechRecognitionEngine : NetworkBehaviour
         if (recognizer != null)
         {
             Debug.LogWarning("Stop Voice");
-            recognizer.Stop();
+            if (recognizer.IsRunning)
+                recognizer.Stop();
         }
     }
 
@@ -60,6 +69,7 @@ public class SpeechRecognitionEngine : NetworkBehaviour
     public void Recognizer_OnPhraseRecognized(PhraseRecognizedEventArgs args)
     {
         word = args.text;
+        Debug.LogWarning($"Recognizer_OnPhraseRecognized {args.text}");
         visualSync.GuessedWord(word);
 
         //if (word == respostaCorreta)
