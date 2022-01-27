@@ -7,29 +7,32 @@ using System;
 
 public class VisualSync : NetworkBehaviour
 {
-    public RawImage raw;
-    public LiveSketchScript inputSource;
-
-    Texture2D processText;
-
-    byte[] sendingData;
-    byte[] receivedData;
-    private Texture2D receivedTexture;
-
-
-    private NetworkClient client;
-    private NetworkServer server;
+    public LiveSketchScript generationSript;
+    public VisualReceiver receiverSript;
+    public GameObject waitingUI;
 
     public int encodingQuality = 10;
     public int messageSize = 10;
-    private int receivedMessageSize;
 
-    private int currentIndex = 0;
+    byte[] sendingData;
+    byte[] receivedData;
+    Texture2D receivedTexture;
+
+
+    NetworkClient client;
+    NetworkServer server;
+
+    int receivedMessageSize;
+
+    int currentIndex = 0;
     DateTime lastRenderTime;
     DateTime lastSentTime;
     bool hasReceivedInitFrame;
 
     bool waitingForNewFrame;
+
+    private bool isGenerating;
+
 
     [NetworkMessage]
     public struct SyncMessage
@@ -39,24 +42,27 @@ public class VisualSync : NetworkBehaviour
         public ArraySegment<byte> data;
     }
 
+    private void Awake()
+    {
+        var manager = GameObject.Find("Network Manager");
+        client = manager.GetComponent<NetworkClient>();
+        server = manager.GetComponent<NetworkServer>();
+    }
+
     void Start()
     {
         if (IsLocalPlayer)
-            transform.parent.name += " (self)";
+            transform.name += " (self)";
 
-        if (IsClient && !IsLocalPlayer)
-            receivedTexture = new Texture2D(2, 2);
-
-        var manager = GameObject.Find("Network Manager");
-
-        client = manager.GetComponent<NetworkClient>();
-        server = manager.GetComponent<NetworkServer>();
+        receivedTexture = new Texture2D(100, 100);
 
         if (Identity.NetId > 1 && ((!IsLocalPlayer && IsServer) || (IsLocalPlayer && !IsServer)))
         {
-            transform.parent.gameObject.SetActive(false);
+            gameObject.SetActive(false);
             return;
         }
+
+        //SetState(IsServer && IsLocalPlayer);
 
         client.MessageHandler.RegisterHandler<SyncMessage>(OnSyncTexture);
 
@@ -67,16 +73,25 @@ public class VisualSync : NetworkBehaviour
 
     }
 
+
     void FixedUpdate()
     {
-        if (IsServer && IsLocalPlayer)
+        if (isGenerating)
         {
             SyncTexture();
-
-            Debug.Log("Server is applying mat");
-            processText = inputSource.texture2D;
-            raw.texture = processText;
         }
+    }
+
+    public void SetState(bool generate)
+    {
+        waitingUI?.SetActive(false);
+
+        isGenerating = generate;
+
+        if (generate && receiverSript != null)
+            Destroy(receiverSript.gameObject);
+        else if (!generate && generationSript != null)
+            Destroy(generationSript.gameObject);
     }
 
     private void OnSyncTexture(INetworkPlayer player, SyncMessage syncMessage)
@@ -123,7 +138,8 @@ public class VisualSync : NetworkBehaviour
             {
                 receivedData = CLZF.Decompress(receivedData);
                 receivedTexture.LoadImage(receivedData);
-                raw.texture = receivedTexture;
+                //test.texture = receivedTexture;
+                receiverSript.UpdateVisual(ref receivedTexture);
             }
             catch (Exception ex)
             {
@@ -138,10 +154,10 @@ public class VisualSync : NetworkBehaviour
 
     public void SyncTexture()
     {
-        if (inputSource.texture2D == null) return;
+        if (generationSript.generatedTex == null) return;
 
         //Debug.Log("Setting up new frame data");
-        sendingData = CLZF.Compress(inputSource.texture2D.EncodeToJPG(encodingQuality));
+        sendingData = CLZF.Compress(generationSript.generatedTex.EncodeToJPG(encodingQuality));
         //Debug.Log($"sendingData total legnth{sendingData.Length}");
         int sum = 0;
 
@@ -166,8 +182,8 @@ public class VisualSync : NetworkBehaviour
                 totalSize = actualSize,
                 data = segm
             };
-            server.SendToAll(msg);
-            //server.SendToAll(msg, Channel.Unreliable);
+            //server.SendToAll(msg);
+            server.SendToAll(msg, Channel.Unreliable);
         }
 
         Debug.Log($"sendingData sum legnth{sum}");

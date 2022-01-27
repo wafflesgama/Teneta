@@ -6,74 +6,60 @@
 
     public class LiveSketchScript : WebCamera
     {
-        public Texture2D texture2D;
-
+        public Texture2D generatedTex;
+        public Texture2D externalTex;
+        public bool bw;
+        public bool upscale;
         public int blurSize = 5;
         public float thres = 70f;
         public float maxVal = 255f;
         public int mode = 0;
+        public int resize = 1;
         public double canny1 = 10;
         public double canny2 = 70;
-        public bool modeC;
-        public double analFactor;
-        int counter = 0;
+
         Mat refImage;
         Mat img;
+        Mat img2;
 
-        public bool bw;
-
-
-
-
-        public Mat finalMat;
 
         protected override void Awake()
         {
             base.Awake();
             this.forceFrontalCamera = true;
+            generatedTex = new Texture2D(2, 2);
+            externalTex = new Texture2D(2, 2);
         }
 
 
         private async void AddRef()
         {
-            await Task.Delay(3000);
-            refImage = img;
+            await Task.Delay(2000);
+            refImage = img2;
         }
+
         // Our sketch generation function
         protected override bool ProcessTexture(WebCamTexture input, ref Texture2D output)
         {
 
             img = Unity.TextureToMat(input, TextureParameters);
-            output = Unity.MatToTexture(img, output);
-            texture2D = output;
-            return true;
+            img2 = new Mat();
+            Cv2.Resize(img, img2, new Size(resize, resize), 0, 0, InterpolationFlags.Nearest);
 
-            counter++;
+
             //Convert image to grayscale
             Mat imgGray = new Mat();
-            Cv2.CvtColor(img, imgGray, ColorConversionCodes.BGR2GRAY);
+            Cv2.CvtColor(img2, imgGray, ColorConversionCodes.BGR2GRAY);
 
 
             Mat imgMed = new Mat();
-            Cv2.MedianBlur(img, imgMed, blurSize);
+            Cv2.MedianBlur(img2, imgMed, blurSize);
 
             if (Input.GetKey(KeyCode.Space))
             {
                 AddRef();
                 return true;
             }
-
-
-            //if (Input.GetKey(KeyCode.T))
-            //{
-            //    anal = imgGray;
-            //}
-
-            //if (anal != null)
-            //{
-            //    //analFactor = Cv2.(anal, imgGray, ShapeMatchModes.I1);
-            //}
-
 
 
             if (refImage == null) return true;
@@ -89,8 +75,6 @@
             //Cv2.CvtColor(diff, after, ColorConversionCodes.BGR2GRAY);
 
             //Cv2.MorphologyEx(imgGray, morpho, MorphTypes.TopHat, imgGray);
-
-
 
 
             ////Do an invert binarize the image
@@ -114,49 +98,50 @@
                 Cv2.Threshold(diff, mask, thres, maxVal, ThresholdTypes.Tozero);
 
 
-            //////Extract edges
-            //Mat cannyEdges = new Mat();
-            //Cv2.Canny(mask, cannyEdges, canny1, canny2);
             Mat maskConverted = new Mat();
             if (bw)
                 Cv2.CvtColor(mask, maskConverted, ColorConversionCodes.BGR2GRAY);
             else
                 maskConverted = mask;
 
+            Destroy(generatedTex);
+            generatedTex = Unity.MatToTexture(maskConverted, output);
+            if (upscale)
+            {
+                Mat upScaled = new Mat();
+                Cv2.Resize(maskConverted, upScaled, new Size(1280, 720), 0, 0, InterpolationFlags.Nearest);
+                //Destroy(generatedTex);
+                output = Unity.MatToTexture(upScaled, output);
+            }
+            else
+            {
+                //Destroy(generatedTex);
+                output = Unity.MatToTexture(maskConverted, output);
+            }
+            //output = generatedTex;
 
-            ////if (modeC)
-            ////{
-            //Point[][] countourPoints;
-            //HierarchyIndex[] hierarchy;
-            //Point[][] countourPoints;
-            //Mat fillRec = new Mat();
-            //Cv2.FindContours(maskConverted, out countourPoints, out hierarchy, RetrievalModes.Tree, ContourApproximationModes.ApproxSimple);
-            //if (countourPoints.Length > 0  && modeC)
-            //{
-
-            //    //int largestIndex = 0;
-            //    //for (int i = 0; i < countourPoints.Length; i++)
-            //    //{
-            //    //    if (countourPoints[i].Length > countourPoints[largestIndex].Length)
-            //    //        largestIndex = i;
-            //    //}
-            //    Cv2.DrawContours(fillRec, countourPoints,0, Scalar.Blue);
-            //    //Cv2.FillPoly(fillRec, countourPoints, Scalar.Blue);
-            //    // result, passing output texture as parameter allows to re-use it's buffer
-            //    // should output texture be null a new texture will be created
-            //    if (modeC)
-            //        output = Unity.MatToTexture(fillRec, output);
-            //}
-
-            //Mat mixed = new Mat();
-            //Cv2.Add(fillRec, maskConverted, mixed);
-
-            finalMat = maskConverted;
-            //if (!modeC)
-            output = Unity.MatToTexture(maskConverted, output);
-            texture2D = output;
+            //Destroy(generatedTex);
             //}
             return true;
         }
+
+
+        protected override void ExternalProcess()
+        {
+            if (upscale)
+            {
+                img = Unity.TextureToMat(externalTex);
+                img2 = new Mat();
+                Cv2.Resize(img, img2, new Size(resize, resize), 0, 0, InterpolationFlags.Nearest);
+                surfaceImage.texture = Unity.MatToTexture(img2);
+            }
+            else
+            {
+                surfaceImage.texture = externalTex;
+            }
+
+        }
     }
+
+
 }
