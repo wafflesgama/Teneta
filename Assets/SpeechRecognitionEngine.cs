@@ -28,7 +28,7 @@ public class SpeechRecognitionEngine : NetworkBehaviour
             Microphone.Start(Microphone.devices[0], true, 100, 44100);
             recognizer = new KeywordRecognizer(keywords, confidence);
             recognizer.OnPhraseRecognized += Recognizer_OnPhraseRecognized;
-            //visualSync = GetComponent<VisualSync>();
+            visualSync = GetComponent<VisualSync>();
             recognizer.Start();
         }
     }
@@ -43,6 +43,12 @@ public class SpeechRecognitionEngine : NetworkBehaviour
             if (!recognizer.IsRunning)
                 recognizer.Start();
         }
+        else
+        {
+            recognizer = new KeywordRecognizer(keywords, confidence);
+            recognizer.OnPhraseRecognized += Recognizer_OnPhraseRecognized;
+            recognizer.Start();
+        }
     }
     private void OnDisable()
     {
@@ -51,17 +57,20 @@ public class SpeechRecognitionEngine : NetworkBehaviour
             Debug.LogWarning("Stop Voice");
             if (recognizer.IsRunning)
                 recognizer.Stop();
+
+            recognizer.Dispose();
+            recognizer = null;
         }
     }
 
 
 
-    
+
     public void Recognizer_OnPhraseRecognized(PhraseRecognizedEventArgs args)
     {
         //word = args.text;
         Debug.LogWarning($"Recognizer_OnPhraseRecognized {args.text}");
-        //visualSync.GuessedWord(word);
+        visualSync.GuessedWord(args.text);
 
         //if (word == respostaCorreta)
         //{

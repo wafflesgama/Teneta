@@ -156,9 +156,9 @@ namespace OpenCvSharp.Demo
             {
                 if (webCamTexture.isPlaying)
                     webCamTexture.Stop();
-                
+
                 webCamTexture = null;
-                webCamDevice=null;
+                webCamDevice = null;
             }
         }
 
@@ -167,6 +167,14 @@ namespace OpenCvSharp.Demo
         /// </summary>
         private void Update()
         {
+
+            if (!gameObject.activeSelf)
+            {
+                if (webCamTexture.isPlaying)
+                    webCamTexture.Stop();
+
+                return;
+            }
             if (webCamTexture != null)
             {
                 // this must be called continuously

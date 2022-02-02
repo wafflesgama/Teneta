@@ -784,13 +784,13 @@ MonoBehaviour:
   surface: {fileID: 1410223939765697826}
   generatedTex: {fileID: 0}
   externalTex: {fileID: 0}
-  bw: 1
+  bw: 0
   upscale: 1
   blurSize: 5
   thres: 70
   maxVal: 255
   mode: 2
-  resize: 110
+  resize: 55
   canny1: 10
   canny2: 70
 --- !u!1 &5821140545871534787

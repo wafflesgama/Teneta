@@ -46,7 +46,7 @@ public class GameManager : NetworkBehaviour
 
     private async void Server_OnPlayerConnect(INetworkPlayer player)
     {
-        await Task.Delay(250);
+        await Task.Delay(450);
         if (this.generator != null && !player.Identity.gameObject.name.Equals("Visual Canvas(Clone) (self)"))
         {
             receiver = player.Identity.gameObject.GetComponent<VisualSync>();
