@@ -215,6 +215,82 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &475218331
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 475218333}
+  - component: {fileID: 475218332}
+  m_Layer: 0
+  m_Name: testVoice
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &475218332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 475218331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b678a0472db1b7b4c971ce33db6f2162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  keywords:
+  - macarena
+  - swim
+  - zombie
+  - chicken
+  - fish
+  - soldier
+  - clock
+  - plane
+  - scissors
+  - heart
+  - drive
+  - rancho
+  - kill
+  - ballerina
+  - maestro
+  - paint
+  - eat
+  - cowboy
+  - camel
+  - fight
+  - house
+  - star
+  - ass
+  - cum
+  - dick
+  - harambe
+  - fandom
+  - taylor swift
+  - lebron james
+  confidence: 2
+--- !u!4 &475218333
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 475218331}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 589.5462, y: 1032.8159, z: -40.493137}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &740401211
 GameObject:
   m_ObjectHideFlags: 0
@@ -556,7 +632,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1886349879}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4506a859f7b215b4d9c28d488b826219, type: 3}
   m_Name: 
@@ -595,7 +671,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnablePeerMetrics: 0
   MetricsSize: 10
-  SocketFactory: {fileID: 1886349880}
+  SocketFactory: {fileID: 1886349889}
   DisconnectOnException: 1
   authenticator: {fileID: 0}
   _started:
@@ -631,7 +707,7 @@ MonoBehaviour:
   MaxConnections: 4
   DisconnectOnException: 1
   Listening: 1
-  SocketFactory: {fileID: 1886349880}
+  SocketFactory: {fileID: 1886349889}
   authenticator: {fileID: 0}
   _started:
     _event:

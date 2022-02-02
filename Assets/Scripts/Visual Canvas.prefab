@@ -89,12 +89,13 @@ MonoBehaviour:
   - fight
   - house
   - star
+  - lebron james
+  - harambe
+  - crack
+  - that boy
+  - nigga
+  - nigga
   confidence: 1
-  correctAnswer: 0
-  respostaCorreta: 
-  currentStringIndex: 0
-  respostaDada: 
-  word: 
 --- !u!1 &1410223939765697826
 GameObject:
   m_ObjectHideFlags: 0
@@ -523,7 +524,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -620.07}
+  m_AnchoredPosition: {x: 0, y: -727}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &5693530206054661487
@@ -545,6 +546,7 @@ GameObject:
   - component: {fileID: 1500713560541418891}
   - component: {fileID: 4863780439054717770}
   - component: {fileID: 4565037530169462175}
+  - component: {fileID: 583887847}
   m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
@@ -568,8 +570,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -44.935425, y: 620.36}
-  m_SizeDelta: {x: 2067.1687, y: 256.4415}
+  m_AnchoredPosition: {x: -44.935425, y: 676.7955}
+  m_SizeDelta: {x: 2067.1687, y: 143.5706}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4863780439054717770
 CanvasRenderer:
@@ -592,7 +594,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9481132, g: 0.9985976, b: 1, a: 1}
+  m_Color: {r: 0.9528302, g: 0.9528302, b: 0.9528302, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -609,6 +611,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &583887847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6085870901099599864}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0}
+  m_EffectDistance: {x: 1, y: -13.84}
+  m_UseGraphicAlpha: 1
 --- !u!1 &6906473902731545796
 GameObject:
   m_ObjectHideFlags: 0
@@ -643,7 +660,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 334.85, y: 626}
+  m_AnchoredPosition: {x: -38.7, y: 670.98}
   m_SizeDelta: {x: 768.3308, y: 288.9918}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5061359153317072058
@@ -667,7 +684,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 0.68235296}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -676,18 +693,18 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 13a22abc89fa2204e9e882bf12b8bdca, type: 3}
-    m_FontSize: 75
+    m_FontSize: 53
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 210
-    m_Alignment: 4
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: cat
 --- !u!1 &7497565593680912376
 GameObject:
   m_ObjectHideFlags: 0
@@ -722,7 +739,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -433.47913, y: 626}
+  m_AnchoredPosition: {x: -678.2, y: 669.07}
   m_SizeDelta: {x: 768.3308, y: 288.9918}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1197936989320365548
@@ -746,7 +763,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 0.72156864}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -755,7 +772,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 13a22abc89fa2204e9e882bf12b8bdca, type: 3}
-    m_FontSize: 75
+    m_FontSize: 47
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10

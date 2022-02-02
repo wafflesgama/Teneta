@@ -147,7 +147,7 @@ public class VisualSync : NetworkBehaviour
 
     private void OnSyncTexture(INetworkPlayer player, SyncMessage syncMessage)
     {
-        Debug.Log($"OnSyncTexture received index {syncMessage.index}");
+        //Debug.Log($"OnSyncTexture received index {syncMessage.index}");
         //Debug.Log($"OnSyncTexture received from owner ID {player.Identity.NetId}, to ID {Identity.NetId} obj {gameObject.name}");
 
         //if (Identity.NetId == player.Identity.NetId || !gameObject.activeSelf) return;
@@ -160,7 +160,7 @@ public class VisualSync : NetworkBehaviour
             if (lastRenderTime != null)
             {
                 var timeDif = DateTime.Now.Subtract(lastRenderTime).TotalMilliseconds;
-                Debug.Log($"Received timeDif {timeDif}");
+                //Debug.Log($"Received timeDif {timeDif}");
             }
             lastRenderTime = DateTime.Now;
             receivedData = syncMessage.data.ToArray();
@@ -171,7 +171,7 @@ public class VisualSync : NetworkBehaviour
         }
         else if (syncMessage.index < currentIndex)
         {
-            Debug.Log($"OnSyncTexture resetting data");
+            //Debug.Log($"OnSyncTexture resetting data");
             waitingForNewFrame = true;
         }
         else if (hasReceivedInitFrame && !waitingForNewFrame)
@@ -183,10 +183,10 @@ public class VisualSync : NetworkBehaviour
 
         if (hasReceivedInitFrame && !waitingForNewFrame && syncMessage.index == receivedMessageSize - 1)
         {
-            if (receivedMessageSize > messageSize)
-                Debug.Log($"OnSyncTexture finalizing bigger data");
-            else
-                Debug.Log($"OnSyncTexture finalizing normal data");
+            //if (receivedMessageSize > messageSize)
+            //    Debug.Log($"OnSyncTexture finalizing bigger data");
+            //else
+            //    Debug.Log($"OnSyncTexture finalizing normal data");
 
             try
             {
@@ -220,7 +220,7 @@ public class VisualSync : NetworkBehaviour
         var leftovers = sendingData.Length - (interval * messageSize);
         var extraSize = (int)Math.Ceiling((float)leftovers / interval);
         var actualSize = messageSize + extraSize;
-        Debug.Log($"actualSize {actualSize}");
+        //Debug.Log($"actualSize {actualSize}");
 
         for (currentIndex = 0; currentIndex < actualSize; currentIndex++)
         {
@@ -243,11 +243,11 @@ public class VisualSync : NetworkBehaviour
                 client.Send<SyncMessage>(msg, Channel.Unreliable);
         }
 
-        Debug.Log($"sendingData sum legnth{sum}");
+        //Debug.Log($"sendingData sum legnth{sum}");
         if (lastSentTime != null)
         {
             var timeDif = DateTime.Now.Subtract(lastSentTime).TotalMilliseconds;
-            Debug.Log($"Sent timeDif {timeDif}");
+            //Debug.Log($"Sent timeDif {timeDif}");
         }
         lastSentTime = DateTime.Now;
 

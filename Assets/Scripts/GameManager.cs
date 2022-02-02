@@ -101,6 +101,7 @@ public class GameManager : NetworkBehaviour
         {
             var wordToGuess = keywords[Random.Range(0, keywords.Length)];
             SetAwnser(wordToGuess);
+            SetVis(wordToGuess);
         }
     }
 
@@ -115,7 +116,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     public void OnSwitchSides()
     {
-        Debug.Log("Switching Sides");
+        //Debug.Log("Switching Sides");
         var test = !generator.gameObject.activeSelf;
         generator.gameObject.SetActive(!generator.gameObject.activeSelf);
         receiver.gameObject.SetActive(!receiver.gameObject.activeSelf);
@@ -153,6 +154,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void SetVis(string aw)
     {
+        //Debug.Log("SetVis",gameObject);
         generator.SetVisWord(aw);
     }
 

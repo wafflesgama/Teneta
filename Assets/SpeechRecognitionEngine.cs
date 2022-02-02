@@ -8,15 +8,10 @@ public class SpeechRecognitionEngine : NetworkBehaviour
 {
     public string[] keywords = new string[] { "macarena", "swim", "zombie", "chicken", "fish", "soldier", "clock", "plane", "scissors", "heart", "drive", "rancho", "kill", "ballerina", "maestro", "paint", "eat", "cowboy", "camel", "fight", "house", "star" };
     public ConfidenceLevel confidence = ConfidenceLevel.Medium;
-    public bool correctAnswer = false;
-    public string respostaCorreta;
-    public int currentStringIndex;
-    public string respostaDada;
     VisualSync visualSync;
 
 
     protected PhraseRecognizer recognizer;
-    public string word;
 
 
     private void Start()
@@ -30,10 +25,10 @@ public class SpeechRecognitionEngine : NetworkBehaviour
             }
             //Debug.Log(devi)
             Debug.LogWarning("Init Voice");
-            Microphone.Start(Microphone.devices[0], true, 100, 4100);
+            Microphone.Start(Microphone.devices[0], true, 100, 44100);
             recognizer = new KeywordRecognizer(keywords, confidence);
             recognizer.OnPhraseRecognized += Recognizer_OnPhraseRecognized;
-            visualSync = GetComponent<VisualSync>();
+            //visualSync = GetComponent<VisualSync>();
             recognizer.Start();
         }
     }
@@ -61,16 +56,12 @@ public class SpeechRecognitionEngine : NetworkBehaviour
 
 
 
-    public void SetWord(string word)
-    {
-        respostaCorreta = word;
-    }
-
+    
     public void Recognizer_OnPhraseRecognized(PhraseRecognizedEventArgs args)
     {
-        word = args.text;
+        //word = args.text;
         Debug.LogWarning($"Recognizer_OnPhraseRecognized {args.text}");
-        visualSync.GuessedWord(word);
+        //visualSync.GuessedWord(word);
 
         //if (word == respostaCorreta)
         //{
