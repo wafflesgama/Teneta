@@ -6,6 +6,7 @@ using UnityEngine.Windows.Speech;
 
 public class SpeechRecognitionEngine : NetworkBehaviour
 {
+    public static PhraseRecognizer globalRecconizer;
     public string[] keywords = new string[] { "macarena", "swim", "zombie", "chicken", "fish", "soldier", "clock", "plane", "scissors", "heart", "drive", "rancho", "kill", "ballerina", "maestro", "paint", "eat", "cowboy", "camel", "fight", "house", "star" };
     public ConfidenceLevel confidence = ConfidenceLevel.Medium;
     VisualSync visualSync;
@@ -16,7 +17,7 @@ public class SpeechRecognitionEngine : NetworkBehaviour
 
     private void Start()
     {
-        if (recognizer == null)
+        if (recognizer == null && gameObject.activeSelf && globalRecconizer==null)
         {
 
             foreach (var mic in Microphone.devices)
@@ -28,6 +29,7 @@ public class SpeechRecognitionEngine : NetworkBehaviour
             Microphone.Start(Microphone.devices[0], true, 100, 44100);
             recognizer = new KeywordRecognizer(keywords, confidence);
             recognizer.OnPhraseRecognized += Recognizer_OnPhraseRecognized;
+            globalRecconizer = recognizer;
             visualSync = GetComponent<VisualSync>();
             recognizer.Start();
         }
@@ -45,9 +47,15 @@ public class SpeechRecognitionEngine : NetworkBehaviour
         }
         else
         {
+            if(globalRecconizer != null)
+            {
+                globalRecconizer.Stop();
+                globalRecconizer.Dispose();
+            }
             recognizer = new KeywordRecognizer(keywords, confidence);
             recognizer.OnPhraseRecognized += Recognizer_OnPhraseRecognized;
             recognizer.Start();
+            globalRecconizer = recognizer;
         }
     }
     private void OnDisable()
