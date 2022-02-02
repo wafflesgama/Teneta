@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using OpenCvSharp.Demo;
 using System;
+using System.Threading.Tasks;
 
 public class VisualSync : NetworkBehaviour
 {
@@ -37,6 +38,9 @@ public class VisualSync : NetworkBehaviour
 
     public Text visWord;
 
+
+    public Animator transitionAnim;
+    public Text transitionText;
 
     [NetworkMessage]
     public struct SyncMessage
@@ -89,16 +93,24 @@ public class VisualSync : NetworkBehaviour
     //    client.MessageHandler.UnregisterHandler<SyncMessage>();
     //}
 
-    public void SetAwnser(string aw)
+    public async  void SetAwnser(string aw)
     {
-        visWord.transform.parent.gameObject.SetActive(false);
+        transitionText.text = "You are guessing";
+        transitionAnim.SetBool("fade", true);
+        await Task.Delay(700);
         wordToGuess = aw;
+        visWord.transform.parent.gameObject.SetActive(false);
+        transitionAnim.SetBool("fade", false);
     }
 
-    public void SetVisWord(string word)
+    public async void SetVisWord(string word)
     {
-        visWord.transform.parent.gameObject.SetActive(true);
+        transitionText.text = "You are mimicking";
+        transitionAnim.SetBool("fade", true);
         visWord.text = word;
+        await Task.Delay(700);
+        visWord.transform.parent.gameObject.SetActive(true);
+        transitionAnim.SetBool("fade", false);
     }
     public void GuessedWord(string word)
     {
