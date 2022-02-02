@@ -147,7 +147,7 @@ public class VisualSync : NetworkBehaviour
 
     public void SetState(bool generate)
     {
-        waitingUI?.SetActive(false);
+        waitingUI.SetActive(false);
 
         isGenerating = generate;
 
