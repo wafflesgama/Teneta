@@ -17,7 +17,13 @@ public class SpeechRecognitionEngine : NetworkBehaviour
 
     private void Start()
     {
-        if (recognizer == null && gameObject.activeSelf && globalRecconizer==null)
+        if(globalRecconizer != null)
+        {
+            globalRecconizer.Stop();
+            globalRecconizer.Dispose();
+            globalRecconizer= null; 
+        }
+        if (recognizer == null && gameObject.activeSelf)
         {
 
             foreach (var mic in Microphone.devices)
@@ -49,9 +55,11 @@ public class SpeechRecognitionEngine : NetworkBehaviour
         {
             if(globalRecconizer != null)
             {
+                Debug.LogWarning("Start Voice");
                 globalRecconizer.Stop();
                 globalRecconizer.Dispose();
             }
+
             recognizer = new KeywordRecognizer(keywords, confidence);
             recognizer.OnPhraseRecognized += Recognizer_OnPhraseRecognized;
             recognizer.Start();
@@ -68,6 +76,7 @@ public class SpeechRecognitionEngine : NetworkBehaviour
 
             recognizer.Dispose();
             recognizer = null;
+            globalRecconizer = null;
         }
     }
 
