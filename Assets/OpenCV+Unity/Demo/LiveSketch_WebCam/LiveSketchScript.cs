@@ -44,16 +44,21 @@
 
             img = Unity.TextureToMat(input, TextureParameters);
             img2 = new Mat();
+
+
+
+
             Cv2.Resize(img, img2, new Size(resize, resize), 0, 0, InterpolationFlags.Nearest);
 
 
             //Convert image to grayscale
-            Mat imgGray = new Mat();
-            Cv2.CvtColor(img2, imgGray, ColorConversionCodes.BGR2GRAY);
+            //Mat imgGray = new Mat();
+            //Cv2.CvtColor(img2, img2, ColorConversionCodes.BGR2GRAY);
 
 
-            Mat imgMed = new Mat();
-            Cv2.MedianBlur(img2, imgMed, blurSize);
+
+            //Mat imgMed = new Mat();
+            Cv2.MedianBlur(img2, img2, blurSize);
 
             if (Input.GetKey(KeyCode.Space))
             {
@@ -68,8 +73,11 @@
             //Mat imgGrayBlur = new Mat();
             //Cv2.GaussianBlur(imgGray, imgGrayBlur, new Size(blurSize, blurSize), 0);
 
+
             Mat diff = new Mat();
-            Cv2.Absdiff(refImage, imgMed, diff);
+            Cv2.Absdiff(refImage, img2, diff);
+
+
 
             //Mat after = new Mat();
             //Cv2.CvtColor(diff, after, ColorConversionCodes.BGR2GRAY);
@@ -98,30 +106,63 @@
                 Cv2.Threshold(diff, mask, thres, maxVal, ThresholdTypes.Tozero);
 
 
-            Mat maskConverted = new Mat();
+            //Mat maskConverted = new Mat();
             if (bw)
-                Cv2.CvtColor(mask, maskConverted, ColorConversionCodes.BGR2GRAY);
-            else
-                maskConverted = mask;
-
-            Destroy(generatedTex);
-            generatedTex = Unity.MatToTexture(maskConverted, output);
-            if (upscale)
-            {
-                Mat upScaled = new Mat();
-                Cv2.Resize(maskConverted, upScaled, new Size(1280, 720), 0, 0, InterpolationFlags.Nearest);
-                //Destroy(generatedTex);
-                output = Unity.MatToTexture(upScaled, output);
-            }
-            else
-            {
-                //Destroy(generatedTex);
-                output = Unity.MatToTexture(maskConverted, output);
-            }
-            //output = generatedTex;
+                Cv2.CvtColor(mask, mask, ColorConversionCodes.BGR2GRAY);
+            //else
+            //    maskConverted = mask;
 
             //Destroy(generatedTex);
+            //generatedTex = Unity.MatToTexture(maskConverted, output);
+            //if (upscale)
+            //{
+            //    Mat upScaled = new Mat();
+            //    Cv2.Resize(mask, upScaled, new Size(1280, 720), 0, 0, InterpolationFlags.Nearest);
+            //    //Destroy(generatedTex);
+            //    output = Unity.MatToTexture(upScaled, output);
             //}
+            //else
+            //{
+            //    //Destroy(generatedTex);
+            //}
+            //output = Unity.MatToTexture(mask, output);
+            //var rawTest = output.GetRawTextureData();
+            //var rawImageCompressed = CLZF.Compress(rawTest);
+            //var rawImageEncodedCompressed = CLZF.Compress(output.EncodeToJPG(5));
+            //var rawDataInit=mask.ToBytes();
+            var rawDataMy = Unity.MatToByteData(mask);
+            var raw1BitDataMy = Unity.MatTo1BitData(mask);
+            var rawColorsMy = Unity.MatToColors(mask);
+
+
+            var rawDataMyComp = CLZF.Compress(raw1BitDataMy);
+
+
+            Color32[] cColors = new Color32[raw1BitDataMy.Length];
+            for (int i = 0; i < rawDataMy.Length; i++)
+                cColors[i] = new Color32(raw1BitDataMy[i], raw1BitDataMy[i], raw1BitDataMy[i], 255);
+
+
+            Mat imported = Unity.PixelsToMat(cColors, mask.Width, mask.Height, false, false, 0);
+
+            //var rawDataInitComp = CLZF.Compress(rawDataInit);
+            //var rawImageCompressed  = CLZF.Compress(rawTest);
+            //var rawImageEncodedCompressed  = CLZF.Compress(output.EncodeToJPG(5));
+            //Destroy(generatedTex);
+            //}
+
+            if (upscale)
+            {
+                //Mat upScaled = new Mat();
+                Cv2.Resize(imported, imported, new Size(1280, 720), 0, 0, InterpolationFlags.Nearest);
+                //Destroy(generatedTex);
+                //output = Unity.MatToTexture(upScaled, output);
+            }
+            
+
+                output = Unity.MatToTexture(imported, output);
+            //output = Unity.MatToTexture(mask, output);
+
             return true;
         }
 

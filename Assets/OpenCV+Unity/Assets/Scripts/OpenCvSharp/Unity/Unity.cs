@@ -3,6 +3,7 @@ using System.Collections;
 using OpenCvSharp;
 using System;
 using System.Runtime.InteropServices;
+using System.Linq;
 
 namespace OpenCvSharp {
 
@@ -151,7 +152,8 @@ namespace OpenCvSharp {
 				int count = size.Width * size.Height;
 				Color32Bytes data = new Color32Bytes();
 				data.byteArray = new byte[count * 4];
-				data.colors = new Color32[count]; try
+				data.colors = new Color32[count]; 
+				try
                 {
 
 				Marshal.Copy(unityMat.Data, data.byteArray, 0, data.byteArray.Length);
@@ -163,6 +165,73 @@ namespace OpenCvSharp {
 				outTexture.Apply();
 
 				return outTexture;
+			}
+		}
+
+		public static byte[] MatToByteData(Mat mat)
+		{
+			Size size = mat.Size();
+			using (Mat unityMat = new Mat(utils_mat_to_texture_2(mat.CvPtr)))
+			{
+
+				int count = size.Width * size.Height;
+				Color32Bytes data = new Color32Bytes();
+				data.byteArray = new byte[count * 4];
+				data.colors = new Color32[count]; 
+				try
+				{
+					Marshal.Copy(unityMat.Data, data.byteArray, 0, data.byteArray.Length);
+				}
+				catch (Exception ex)
+				{
+					Debug.LogException(ex);
+				}
+				return data.byteArray;
+			}
+		}
+
+
+		public static byte[] MatTo1BitData(Mat mat)
+		{
+			Size size = mat.Size();
+			using (Mat unityMat = new Mat(utils_mat_to_texture_2(mat.CvPtr)))
+			{
+
+				int count = size.Width * size.Height;
+				Color32Bytes data = new Color32Bytes();
+				data.byteArray = new byte[count * 4];
+				data.colors = new Color32[count];
+				try
+				{
+					Marshal.Copy(unityMat.Data, data.byteArray, 0, data.byteArray.Length);
+				}
+				catch (Exception ex)
+				{
+					Debug.LogException(ex);
+				}
+				return data.colors.Select(x=> x.r).ToArray();
+			}
+		}
+
+		public static Color32[] MatToColors(Mat mat)
+		{
+			Size size = mat.Size();
+			using (Mat unityMat = new Mat(utils_mat_to_texture_2(mat.CvPtr)))
+			{
+
+				int count = size.Width * size.Height;
+				Color32Bytes data = new Color32Bytes();
+				data.byteArray = new byte[count * 4];
+				data.colors = new Color32[count];
+				try
+				{
+					Marshal.Copy(unityMat.Data, data.byteArray, 0, data.byteArray.Length);
+				}
+				catch (Exception ex)
+				{
+					Debug.LogException(ex);
+				}
+				return data.colors;
 			}
 		}
 

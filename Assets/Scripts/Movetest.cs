@@ -1,9 +1,9 @@
-using Mirage;
+//using Mirage;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Movetest : NetworkBehaviour
+public class Movetest : MonoBehaviour
 {
 
     public float sbeve=1;
@@ -11,11 +11,11 @@ public class Movetest : NetworkBehaviour
     void Update()
     {
 
-        if (IsLocalPlayer)
-        {
-            Move();
+        //if (IsLocalPlayer)
+        //{
+        //    Move();
 
-        }
+        //}
         
     }
 

@@ -1,10 +1,9 @@
-﻿using Mirage;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Windows.Speech;
 
 
-public class SpeechRecognitionEngine : NetworkBehaviour
+public class SpeechRecognitionEngine : MonoBehaviour
 {
     public static PhraseRecognizer globalRecconizer;
     public string[] keywords = new string[] { "macarena", "swim", "zombie", "chicken", "fish", "soldier", "clock", "plane", "scissors", "heart", "drive", "rancho", "kill", "ballerina", "maestro", "paint", "eat", "cowboy", "camel", "fight", "house", "star" };
@@ -23,7 +22,7 @@ public class SpeechRecognitionEngine : NetworkBehaviour
             globalRecconizer.Dispose();
             globalRecconizer= null; 
         }
-        if (recognizer == null && gameObject.activeSelf)
+        if (recognizer == null)
         {
 
             foreach (var mic in Microphone.devices)

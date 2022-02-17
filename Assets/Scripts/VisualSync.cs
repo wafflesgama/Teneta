@@ -1,4 +1,3 @@
-using Mirage;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +5,7 @@ using OpenCvSharp.Demo;
 using System;
 using System.Threading.Tasks;
 
-public class VisualSync : NetworkBehaviour
+public class VisualSync : MonoBehaviour
 {
     public LiveSketchScript generationSript;
     public VisualReceiver receiverSript;
@@ -20,8 +19,8 @@ public class VisualSync : NetworkBehaviour
     Texture2D receivedTexture;
 
 
-    NetworkClient client;
-    NetworkServer server;
+    //NetworkClient client;
+    //NetworkServer server;
 
     int receivedMessageSize;
 
@@ -42,7 +41,7 @@ public class VisualSync : NetworkBehaviour
     public Animator transitionAnim;
     public Text transitionText;
 
-    [NetworkMessage]
+    //[NetworkMessage]
     public struct SyncMessage
     {
         public int index;
@@ -53,24 +52,24 @@ public class VisualSync : NetworkBehaviour
     private void Awake()
     {
         var manager = GameObject.Find("Network Manager");
-        client = manager.GetComponent<NetworkClient>();
-        server = manager.GetComponent<NetworkServer>();
+        //client = manager.GetComponent<NetworkClient>();
+        //server = manager.GetComponent<NetworkServer>();
     }
 
     void Start()
     {
-        if (IsLocalPlayer)
-            transform.name += " (self)";
+        ////if (IsLocalPlayer)
+        ////    transform.name += " (self)";
 
         receivedTexture = new Texture2D(2, 2);
 
         //client.MessageHandler.RegisterHandler<SyncMessage>(OnSyncTexture);
 
-        if (Identity.NetId > 1 && ((!IsLocalPlayer && IsServer) || (IsLocalPlayer && !IsServer)))
-        {
-            gameObject.SetActive(false);
-            return;
-        }
+        ////if (Identity.NetId > 1 && ((!IsLocalPlayer && IsServer) || (IsLocalPlayer && !IsServer)))
+        ////{
+        ////    gameObject.SetActive(false);
+        ////    return;
+        ////}
 
 
         //SetState(IsServer && IsLocalPlayer);
@@ -115,25 +114,25 @@ public class VisualSync : NetworkBehaviour
     public void GuessedWord(string word)
     {
         Debug.LogWarning($"Guessed word {word}");
-        if (word.Equals(wordToGuess))
-            GameManager.instance.OnSwitchSides();
+        //if (word.Equals(wordToGuess))
+        //    GameManager.instance.OnSwitchSides();
 
     }
 
     public void StopReceiving()
     {
-        if (IsServer)
-            client.MessageHandler.UnregisterHandler<SyncMessage>();
-        else
-            server.MessageHandler.UnregisterHandler<SyncMessage>();
+        ////if (IsServer)
+        ////    client.MessageHandler.UnregisterHandler<SyncMessage>();
+        ////else
+        ////    server.MessageHandler.UnregisterHandler<SyncMessage>();
     }
 
     public void StartReceiving()
     {
-        if (IsServer)
-            server.MessageHandler.RegisterHandler<SyncMessage>(OnSyncTexture);
-        else
-            client.MessageHandler.RegisterHandler<SyncMessage>(OnSyncTexture);
+        //if (IsServer)
+        //    server.MessageHandler.RegisterHandler<SyncMessage>(OnSyncTexture);
+        //else
+        //    client.MessageHandler.RegisterHandler<SyncMessage>(OnSyncTexture);
     }
 
 
@@ -157,7 +156,7 @@ public class VisualSync : NetworkBehaviour
             Destroy(generationSript.gameObject);
     }
 
-    private void OnSyncTexture(INetworkPlayer player, SyncMessage syncMessage)
+    private void OnSyncTexture( SyncMessage syncMessage)
     {
         //Debug.Log($"OnSyncTexture received index {syncMessage.index}");
         //Debug.Log($"OnSyncTexture received from owner ID {player.Identity.NetId}, to ID {Identity.NetId} obj {gameObject.name}");
@@ -249,10 +248,10 @@ public class VisualSync : NetworkBehaviour
                 data = segm
             };
             //server.SendToAll(msg);
-            if (IsServer)
-                server.SendToAll<SyncMessage>(msg, Channel.Unreliable);
-            else
-                client.Send<SyncMessage>(msg, Channel.Unreliable);
+            //if (IsServer)
+            //    server.SendToAll<SyncMessage>(msg, Channel.Unreliable);
+            //else
+            //    client.Send<SyncMessage>(msg, Channel.Unreliable);
         }
 
         //Debug.Log($"sendingData sum legnth{sum}");
